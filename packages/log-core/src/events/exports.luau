@@ -28,7 +28,7 @@ return {
 			id = "registered",
 			listeners = {},
 			_disposed = false,
-		} :: Event<()>,
+		} :: Event<any>, -- FIXME: To prevent circular dependency
 		{
 			__index = indexMeta,
 		}
@@ -39,7 +39,7 @@ return {
 			id = "unregistered",
 			listeners = {},
 			_disposed = false,
-		} :: Event<()>,
+		} :: Event<any>, -- FIXME: To prevent circular dependency
 		{
 			__index = indexMeta,
 		}

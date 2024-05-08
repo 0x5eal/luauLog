@@ -2,6 +2,7 @@ export type LogMessage = {
 	scope: LogScope,
 	message: string,
 	timestamp: number,
+	target: string,
 }
 
 export type LogScope = "INFO" | "WARN" | "ERROR" | "DEBUG" | "TRACE"

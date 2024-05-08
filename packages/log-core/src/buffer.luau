@@ -15,6 +15,7 @@ function LogBuffer.append(
 	options: {
 		truncate: boolean,
 		scope: Types.LogScope,
+		target: string,
 	},
 	...
 )
@@ -28,7 +29,8 @@ function LogBuffer.append(
 			{
 				scope = options.scope,
 				message = writer:writeAll(...),
-				timestamp = os.clock(),
+				timestamp = os.time(),
+				target = options.target,
 			} :: Types.LogMessage
 		)
 	end
