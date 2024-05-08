@@ -3,7 +3,7 @@ export type Event<T...> = Event.Event<T...>
 
 local Types = require("../types")
 
-local function metamethodIdx<I, T...>(self: Event<T...>, idx: I)
+local function indexMeta<I, T...>(self: Event<T...>, idx: I)
 	if not self._disposed then
 		return Event[idx]
 	end
@@ -19,7 +19,7 @@ return {
 			_disposed = false,
 		} :: Event<()>,
 		{
-			__index = metamethodIdx,
+			__index = indexMeta,
 		}
 	),
 
@@ -30,7 +30,7 @@ return {
 			_disposed = false,
 		} :: Event<()>,
 		{
-			__index = metamethodIdx,
+			__index = indexMeta,
 		}
 	),
 
@@ -41,7 +41,7 @@ return {
 			_disposed = false,
 		} :: Event<()>,
 		{
-			__index = metamethodIdx,
+			__index = indexMeta,
 		}
 	),
 
@@ -52,7 +52,7 @@ return {
 			_disposed = false,
 		} :: Event<string>,
 		{
-			__index = metamethodIdx,
+			__index = indexMeta,
 		}
 	),
 
@@ -63,7 +63,7 @@ return {
 			_disposed = false,
 		} :: Event<Types.LogMessage>,
 		{
-			__index = metamethodIdx,
+			__index = indexMeta,
 		}
 	),
 }
