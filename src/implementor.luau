@@ -10,6 +10,15 @@ export type Implementor = typeof(Implementor) & {
 	buffer: LogBuffer.LogBuffer,
 }
 
+isRegistered = false
+local registerEventId = Events.EVENT_REGISTERED:listen(function(_: string)
+    isRegistered = true
+end)
+local unregisterEventId = Events.EVENT_UNREGISTERED:listen(function(_: string)
+    isRegistered = false
+end)
+
+
 function Implementor.register(
 	writer: Types.Writer?,
 	formatter: Types.Formatter,
@@ -18,7 +27,11 @@ function Implementor.register(
 		existingStore: { Types.LogMessage }?,
 	}
 )
-    Events.EVENT_REGISTERED:_fire()
+    if isRegistered then
+        error("An implementor has already been registered, unregister that first")
+    end
+
+    Events.EVENT_REGISTERED:_fire(registerEventId)
 
 	local buffer = setmetatable({
 		truncateLimit = options.truncateLimit or 1000,
@@ -39,6 +52,10 @@ function Implementor.register(
 	)
 end
 
+function Implementor.unregister()
+	Events.EVENT_UNREGISTERED:_fire(unregisterEventId)
+end
+
 function Implementor.Prototype.getImplementorInstance(self: Implementor)
 	return self
 end
@@ -50,3 +67,5 @@ function Implementor.Prototype.log(self: Implementor, scope: Types.LogScope, wri
 		scope = scope,
 	})
 end
+
+return Implementor

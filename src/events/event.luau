@@ -15,14 +15,18 @@ export type Event<T...> = typeof(Event) & {
 }
 
 function Event.listen<T...>(self: Event<T...>, handler: (registrarId: string, T...) -> ())
-	return table.insert(
+	local registrarId = Uuid()
+	
+	table.insert(
 		self.listeners,
 		{
-			registrar = Uuid(),
+			registrar = registrarId,
 			registerTimestamp = os.time(),
 			onDispatch = handler,
 		} :: Listener<T...>
 	)
+
+	return registrarId
 end
 
 function Event._fire<T...>(self: Event<T...>, registrarId: string?, ...)
