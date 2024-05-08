@@ -16,7 +16,7 @@ export type Event<T...> = typeof(Event) & {
 
 function Event.listen<T...>(self: Event<T...>, handler: (registrarId: string, T...) -> ())
 	local registrarId = Uuid()
-	
+
 	table.insert(
 		self.listeners,
 		{

@@ -12,12 +12,11 @@ export type Implementor = typeof(Implementor) & {
 
 isRegistered = false
 local registerEventId = Events.EVENT_REGISTERED:listen(function(_: string)
-    isRegistered = true
+	isRegistered = true
 end)
 local unregisterEventId = Events.EVENT_UNREGISTERED:listen(function(_: string)
-    isRegistered = false
+	isRegistered = false
 end)
-
 
 function Implementor.register(
 	writer: Types.Writer?,
@@ -27,11 +26,11 @@ function Implementor.register(
 		existingStore: { Types.LogMessage }?,
 	}
 )
-    if isRegistered then
-        error("An implementor has already been registered, unregister that first")
-    end
+	if isRegistered then
+		error("An implementor has already been registered, unregister that first")
+	end
 
-    Events.EVENT_REGISTERED:_fire(registerEventId)
+	Events.EVENT_REGISTERED:_fire(registerEventId)
 
 	local buffer = setmetatable({
 		truncateLimit = options.truncateLimit or 1000,
