@@ -6,8 +6,11 @@ local Ansi = require("ansi")
 local Types = require("../../log-core/src/types")
 local Writer = require("writer")
 
+local DEFAULT_ENABLED_FN = Writer.enabled
+
 impl = nil
 targetLevelMap = nil
+filterPredicate = nil
 
 Events.EVENT_REGISTERED:listen(function(_: string, firedImpl: Implementor.Implementor<Writer.FleurWriter>)
 	impl = firedImpl
@@ -16,6 +19,8 @@ end)
 ConfigBuilder.EVENT_FLEUR_REGISTER:listen(function(_: string, firedConfigBuilder: ConfigBuilder.ConfigBuilder)
 	targetLevelMap = firedConfigBuilder.levels
 	targetLevelMap.all = nil
+
+	filterPredicate = firedConfigBuilder.filterPredicate
 end)
 
 return setmetatable(
@@ -46,12 +51,21 @@ return setmetatable(
 					end
 
 					local target = debug.info(2, "n")
-					local targetWriter: Writer.FleurWriter = nil
+					local targetWriter: Writer.FleurWriter = Writer
 					local targetLevel: number? = targetLevelMap[target]
 
 					if targetLevel then
-						targetWriter = Writer
 						targetWriter.maxLogLevel = targetLevel
+					end
+
+					local args = table.pack(...)
+					
+					if filterPredicate then
+						targetWriter.enabled = function(w: Writer.FleurWriter, scope: Types.LogScope)
+							return filterPredicate(table.unpack(args)) and DEFAULT_ENABLED_FN(w, scope)
+						end
+					else
+						targetWriter.enabled = DEFAULT_ENABLED_FN
 					end
 
 					if target == "" then

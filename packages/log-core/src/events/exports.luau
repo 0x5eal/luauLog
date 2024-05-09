@@ -51,7 +51,7 @@ return {
 			id = "logAppend",
 			listeners = {},
 			_disposed = false,
-		} :: Event<string>,
+		} :: Event<Types.LogMessage>,
 		{
 			__index = indexMeta,
 		}

@@ -13,7 +13,7 @@ type FleurWriterExt = {
 }
 export type FleurWriter = Types.Writer<FleurWriterExt>
 
-function FleurWriter:writeAll(...)
+function FleurWriter:writeAll(...): string
 	local fmtString: string = select(1, ...)
 	local indexTable = select(2, ...)
 

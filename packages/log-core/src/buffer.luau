@@ -24,15 +24,14 @@ function LogBuffer.append<W>(
 			table.remove(self.store, 1)
 		end
 
-		table.insert(
-			self.store,
-			{
-				scope = options.scope,
-				message = writer:writeAll(...),
-				timestamp = os.time(),
-				target = options.target,
-			} :: Types.LogMessage
-		)
+		local appendedMessage = {
+			scope = options.scope,
+			message = writer:writeAll(...),
+			timestamp = os.time(),
+			target = options.target,
+		}
+		table.insert(self.store, appendedMessage)
+		Events.EVENT_LOG_APPEND:_fire(nil, appendedMessage)
 	end
 
 	if writer.flush then
@@ -47,8 +46,6 @@ function LogBuffer.append<W>(
 			Events.EVENT_LOG_WRITE:_fire(nil, message)
 		end
 	end
-
-	Events.EVENT_LOG_APPEND:_fire(nil, options.scope)
 end
 
 return LogBuffer

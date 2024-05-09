@@ -13,7 +13,7 @@ export type ConfigBuilder = typeof(ConfigBuilder) & {
 	levels: {
 		[string]: number,
 	},
-	filterPredicate: (msg: Types.LogMessage) -> boolean, -- TODO: Implement runtime filtering
+	filterPredicate: (...any) -> boolean, -- TODO: Implement runtime filtering
 	formatTmpl: string,
 	truncateLimit: number,
 }
@@ -66,7 +66,7 @@ function ConfigBuilder.levelFor(self: ConfigBuilder, target: string, level: Type
 	return self
 end
 
-function ConfigBuilder.filter(self: ConfigBuilder, predicate: (msg: Types.LogMessage) -> boolean)
+function ConfigBuilder.filter(self: ConfigBuilder, predicate: (...any) -> boolean)
 	self.filterPredicate = predicate
 	return self
 end
