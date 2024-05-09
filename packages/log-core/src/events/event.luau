@@ -1,5 +1,11 @@
 local Uuid = require("../../vendor/uuid")
 
+--[=[
+	@class Event
+	@private
+
+
+]=]
 local Event = {}
 
 export type Listener<T...> = {
@@ -14,6 +20,14 @@ export type Event<T...> = typeof(Event) & {
 	_disposed: boolean,
 }
 
+--[=[
+	@method listen
+	@within Event
+
+	@param handler (registrarId: string, unknown...) -> ()
+
+	@return string
+]=]
 function Event.listen<T...>(self: Event<T...>, handler: (registrarId: string, T...) -> ())
 	local registrarId = Uuid()
 
@@ -29,6 +43,15 @@ function Event.listen<T...>(self: Event<T...>, handler: (registrarId: string, T.
 	return registrarId
 end
 
+--[=[
+	@method _fire
+	@within Event
+
+	@param registrarId string
+	@param ... ...any
+
+	@return ()
+]=]
 function Event._fire<T...>(self: Event<T...>, registrarId: string?, ...)
 	for _, listener in self.listeners do
 		if registrarId and listener.registrar == registrarId then

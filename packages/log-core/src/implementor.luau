@@ -2,8 +2,15 @@ local Types = require("types")
 local Events = require("events/exports")
 local LogBuffer = require("buffer")
 
+--[=[
+	@class Implementor
+
+
+]=]
 local Implementor = {}
+
 Implementor.Prototype = {}
+
 export type Implementor<W> = typeof(Implementor.Prototype) & {
 	writer: Types.Writer<W>?,
 	formatter: Types.Formatter,
@@ -18,6 +25,16 @@ local _unregisterEventId = Events.EVENT_UNREGISTERED:listen(function(_: string)
 	isRegistered = false
 end)
 
+--[=[
+	@function register
+	@within Implementor
+
+	@param writer Writer
+	@param formatter Formatter
+	@param options { truncateLimite: number?, existingStore: { LogMessage? }? }?
+
+	@return Implementor
+]=]
 function Implementor.register<T>(
 	writer: Types.Writer<T>,
 	formatter: Types.Formatter,
@@ -50,14 +67,37 @@ function Implementor.register<T>(
 	return impl
 end
 
+--[=[
+	@method unregister
+	@within Implementor
+
+	@return ()
+]=]
 function Implementor.unregister<W>(self: Implementor<W>)
 	Events.EVENT_UNREGISTERED:_fire(nil, self)
 end
 
+--[=[
+	@method getImplementorInstance
+	@within Implementor
+
+	@return Implementor
+]=]
 function Implementor.Prototype.getImplementorInstance<W>(self: Implementor<W>)
 	return self
 end
 
+--[=[
+	@method log
+	@within Implementor
+
+	@param target string
+	@param scope LogScope
+	@param writer Writer
+	@param toTruncate boolean
+
+	@return Implementor
+]=]
 function Implementor.Prototype.log<W>(
 	self: Implementor<W>,
 	target: string,
