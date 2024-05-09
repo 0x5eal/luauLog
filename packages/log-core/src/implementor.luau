@@ -4,8 +4,8 @@ local LogBuffer = require("buffer")
 
 local Implementor = {}
 Implementor.Prototype = {}
-export type Implementor = typeof(Implementor.Prototype) & {
-	writer: Types.Writer?,
+export type Implementor<W> = typeof(Implementor.Prototype) & {
+	writer: Types.Writer<W>?,
 	formatter: Types.Formatter,
 	buffer: LogBuffer.LogBuffer,
 }
@@ -18,8 +18,8 @@ local _unregisterEventId = Events.EVENT_UNREGISTERED:listen(function(_: string)
 	isRegistered = false
 end)
 
-function Implementor.register(
-	writer: Types.Writer,
+function Implementor.register<T>(
+	writer: Types.Writer<T>,
 	formatter: Types.Formatter,
 	options: {
 		truncateLimit: number?,
@@ -50,19 +50,19 @@ function Implementor.register(
 	return impl
 end
 
-function Implementor.unregister(self: Implementor)
+function Implementor.unregister<W>(self: Implementor<W>)
 	Events.EVENT_UNREGISTERED:_fire(nil, self)
 end
 
-function Implementor.Prototype.getImplementorInstance(self: Implementor)
+function Implementor.Prototype.getImplementorInstance<W>(self: Implementor<W>)
 	return self
 end
 
-function Implementor.Prototype.log(
-	self: Implementor,
+function Implementor.Prototype.log<W>(
+	self: Implementor<W>,
 	target: string,
 	scope: Types.LogScope,
-	writer: Types.Writer?,
+	writer: Types.Writer<W>?,
 	toTruncate: boolean,
 	...
 )

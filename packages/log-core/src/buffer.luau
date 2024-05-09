@@ -9,9 +9,9 @@ export type LogBuffer = typeof(LogBuffer) & {
 	store: { Types.LogMessage },
 }
 
-function LogBuffer.append(
+function LogBuffer.append<W>(
 	self: LogBuffer,
-	writer: Types.Writer,
+	writer: Types.Writer<W>,
 	options: {
 		truncate: boolean,
 		scope: Types.LogScope,

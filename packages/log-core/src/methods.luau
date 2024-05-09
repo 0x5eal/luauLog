@@ -1,7 +1,7 @@
 local Implementor = require("implementor")
 local Types = require("types")
 
-type LogMethod = (impl: Implementor.Implementor, target: string, writer: Types.Writer?) -> ()
+type LogMethod = <W>(impl: Implementor.Implementor<W>, target: string, writer: Types.Writer<W>?) -> ()
 
 return setmetatable(
 	{} :: {
@@ -13,7 +13,7 @@ return setmetatable(
 	},
 	{
 		__index = function(self, scope: Types.LogScope): LogMethod
-			return function(impl: Implementor.Implementor, target: string, writer: Types.Writer?, ...)
+			return function<W>(impl: Implementor.Implementor<W>, target: string, writer: Types.Writer<W>?, ...)
 				impl:log(target, scope, writer, true, ...)
 			end
 		end,

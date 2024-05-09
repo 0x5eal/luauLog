@@ -5,6 +5,8 @@ local LOG_SCOPES = require("../enum/scope")
 local Implementor = require("../../../log-core/src/implementor")
 local Writer = require("../writer")
 local Formatter = require("../formatter")
+local Events = require("../../../log-core/src/events/event")
+local indexMeta = require("../../../log-core/src/events/exports")._indexMeta
 
 local ConfigBuilder = {}
 export type ConfigBuilder = typeof(ConfigBuilder) & {
@@ -15,6 +17,17 @@ export type ConfigBuilder = typeof(ConfigBuilder) & {
 	formatTmpl: string,
 	truncateLimit: number,
 }
+
+local EVENT_FLEUR_REGISTER = setmetatable(
+	{
+		id = "ready",
+		listeners = {},
+		_disposed = false,
+	} :: Events.Event<ConfigBuilder>,
+	{
+		__index = indexMeta, -- TODO: Remove usage of private API
+	}
+)
 
 function ConfigBuilder.new()
 	return setmetatable({
@@ -64,11 +77,18 @@ function ConfigBuilder.limit(self: ConfigBuilder, limit: number)
 end
 
 function ConfigBuilder.buildAndApply(self: ConfigBuilder)
-	local _impl = Implementor.register(Writer, Formatter(self.formatTmpl), {
+	local w = Writer
+	w.maxLogLevel = self.levels["all"]
+
+	local _impl = Implementor.register(w, Formatter(self.formatTmpl), {
 		truncateLimit = self.truncateLimit,
 	})
 
+	EVENT_FLEUR_REGISTER:_fire(nil, self)
 	-- NOTE: EVENT_REGISTER is handled in interface.luau
 end
 
-return ConfigBuilder
+return {
+	ConfigBuilder = ConfigBuilder,
+	EVENT_FLEUR_REGISTER = EVENT_FLEUR_REGISTER,
+}

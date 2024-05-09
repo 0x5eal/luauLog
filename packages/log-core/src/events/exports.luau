@@ -12,6 +12,7 @@ local function indexMeta<I, T...>(self: Event<T...>, idx: I)
 end
 
 return {
+	_indexMeta = indexMeta,
 	EVENT_READY = setmetatable(
 		{
 			id = "ready",

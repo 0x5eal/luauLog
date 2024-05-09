@@ -8,6 +8,10 @@ local FleurWriter = {
 	maxLogLevel = LOG_SCOPES["TRACE" :: Types.LogScope],
 	flush = true,
 }
+type FleurWriterExt = {
+	maxLogLevel: number,
+}
+export type FleurWriter = Types.Writer<FleurWriterExt>
 
 function FleurWriter:writeAll(...)
 	local fmtString: string = select(1, ...)
@@ -54,8 +58,8 @@ function FleurWriter:writeAll(...)
 	return fmtString
 end
 
-function FleurWriter.enabled(self: typeof(FleurWriter), scope: Types.LogScope)
+function FleurWriter.enabled(self: FleurWriter, scope: Types.LogScope)
 	return LOG_SCOPES[string.upper(scope) :: Types.LogScope] <= self.maxLogLevel
 end
 
-return FleurWriter :: Types.Writer
+return FleurWriter :: FleurWriter
