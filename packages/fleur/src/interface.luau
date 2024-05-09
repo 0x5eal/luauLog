@@ -59,7 +59,7 @@ return setmetatable(
 					end
 
 					local args = table.pack(...)
-					
+
 					if filterPredicate then
 						targetWriter.enabled = function(w: Writer.FleurWriter, scope: Types.LogScope)
 							return filterPredicate(table.unpack(args)) and DEFAULT_ENABLED_FN(w, scope)
