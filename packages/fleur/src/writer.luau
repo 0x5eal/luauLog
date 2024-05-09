@@ -55,7 +55,7 @@ function FleurWriter:writeAll(...)
 end
 
 function FleurWriter.enabled(self: typeof(FleurWriter), scope: Types.LogScope)
-	return LOG_SCOPES[scope] <= self.maxLogLevel
+	return LOG_SCOPES[string.upper(scope) :: Types.LogScope] <= self.maxLogLevel
 end
 
 return FleurWriter :: Types.Writer

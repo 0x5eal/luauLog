@@ -17,7 +17,7 @@ local LEVEL_COLORMAP: { [Types.LogScope]: string } = {
 
 function Formatter:fmt(logMessage: Types.LogMessage): string
 	return Writer:writeAll(self.fmtTmpl, {
-		time = Ansi.style(DateTime.fromUnixTimestamp(logMessage.timestamp):formatLocalTime("%Y-%m-%d %H:%M:%S"), "dim"),
+		time = Ansi.style(DateTime.fromUnixTimestamp(logMessage.timestamp):formatUniversalTime("%Y-%m-%d %H:%M:%S"), "dim"),
 		level = LEVEL_COLORMAP[logMessage.scope],
 		target = Ansi.style(logMessage.target, "bold"),
 		message = logMessage.message,
@@ -27,9 +27,9 @@ end
 local function constructor(fmt: string?)
 	return setmetatable({
 		fmtTmpl = fmt or DEFAULT_FORMATTING_TMPL,
-}, {
-    __index = Formatter,
-})
+	}, {
+		__index = Formatter,
+	})
 end
 
 return constructor

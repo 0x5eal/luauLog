@@ -38,16 +38,13 @@ function Implementor.register(
 		__index = LogBuffer,
 	})
 
-	local impl = setmetatable(
-		{
-			writer = writer,
-			formatter = formatter,
-			buffer = buffer,
-		},
-		{
-			__index = Implementor.Prototype,
-		}
-	)
+	local impl = setmetatable({
+		writer = writer,
+		formatter = formatter,
+		buffer = buffer,
+	}, {
+		__index = Implementor.Prototype,
+	})
 
 	Events.EVENT_REGISTERED:_fire(nil, impl)
 	return impl
@@ -65,12 +62,11 @@ function Implementor.Prototype.log(
 	self: Implementor,
 	target: string,
 	scope: Types.LogScope,
-	writer,
+	writer: Types.Writer?,
 	toTruncate: boolean,
 	...
 )
-	writer = writer or self.writer
-	self.buffer:append(writer, {
+	self.buffer:append(writer or self.writer, {
 		truncate = true,
 		scope = scope,
 		target = target,

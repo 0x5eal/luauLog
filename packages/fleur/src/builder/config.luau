@@ -26,7 +26,7 @@ end
 
 function ConfigBuilder.format(self: ConfigBuilder, format: string)
 	self.formatTmpl = format
-    return self
+	return self
 end
 
 function ConfigBuilder.level(self: ConfigBuilder, level: Types.LogScope | number)
