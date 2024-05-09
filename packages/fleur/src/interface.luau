@@ -1,5 +1,6 @@
 local Serde = require("@lune/serde")
 local Fs = require("@lune/fs")
+local Task = require("@lune/task")
 
 local Events = require("../../log-core/src/events/exports")
 local ConfigBuilder = require("builder/config")
@@ -75,15 +76,68 @@ Events.EVENT_LOG_WRITE:listen(function(_: string, logMessage: Types.LogMessage)
 	end
 end)
 
+--[=[
+	@class Fleur
+]=]
 return setmetatable(
 	{
+		--[=[
+			@prop ConfigBuilder ConfigBuilder
+			@withn Fleur
+		]=]
+
 		ConfigBuilder = ConfigBuilder.ConfigBuilder,
 	} :: {
 		ConfigBuilder: ConfigBuilder.ConfigBuilder,
+
+		--[=[
+			@function error
+			@within Fleur
+
+			@param ...any
+
+			@return ()
+		]=]
 		error: (...any) -> (),
+
+		--[=[
+			@function warn
+			@within Fleur
+
+			@param ...any
+
+			@return ()
+		]=]
 		warn: (...any) -> (),
+
+		--[=[
+			@function info
+			@within Fleur
+
+			@param ...any
+
+			@return ()
+		]=]
 		info: (...any) -> (),
+
+		--[=[
+			@function debug
+			@within Fleur
+
+			@param ...any
+
+			@return ()
+		]=]
 		debug: (...any) -> (),
+
+		--[=[
+			@function trace
+			@within Fleur
+
+			@param ...any
+
+			@return ()
+		]=]
 		trace: (...any) -> (),
 	},
 	{
@@ -100,6 +154,8 @@ return setmetatable(
 				return function(...)
 					while impl == nil do
 						print("Waiting for Implementor to be registered")
+
+						Task.wait(0.5)
 					end
 
 					local localImpl: Implementor.Implementor<Writer.FleurWriter> = impl

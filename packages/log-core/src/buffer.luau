@@ -1,6 +1,11 @@
 local Events = require("events/exports")
 local Types = require("types")
 
+--[=[
+	@class LogBuffer
+	@private
+
+]=]
 local LogBuffer = {}
 
 export type LogBuffer = typeof(LogBuffer) & {
@@ -9,6 +14,15 @@ export type LogBuffer = typeof(LogBuffer) & {
 	store: { Types.LogMessage },
 }
 
+--[=[
+	@method append
+	@within Implementor
+
+	@param writer Writer
+	@param options { truncate: boolean, scope: LogScope, target: string }?
+
+	@return ()
+]=]
 function LogBuffer.append<W>(
 	self: LogBuffer,
 	writer: Types.Writer<W>,

@@ -11,8 +11,20 @@ local function indexMeta<I, T...>(self: Event<T...>, idx: I)
 	return nil
 end
 
+--[=[
+	@class Exports
+	@private
+
+
+]=]
 return {
 	_indexMeta = indexMeta,
+
+	--[=[
+		@prop EVENT_READY Event
+		@within Exports
+	]=]
+
 	EVENT_READY = setmetatable(
 		{
 			id = "ready",
@@ -23,6 +35,11 @@ return {
 			__index = indexMeta,
 		}
 	),
+
+	--[=[
+		@prop EVENT_REGISTERED Event
+		@within Exports
+	]=]
 
 	EVENT_REGISTERED = setmetatable(
 		{
@@ -35,6 +52,11 @@ return {
 		}
 	),
 
+	--[=[
+		@prop EVENT_UNREGISTERED Event
+		@within Exports
+	]=]
+
 	EVENT_UNREGISTERED = setmetatable(
 		{
 			id = "unregistered",
@@ -46,6 +68,11 @@ return {
 		}
 	),
 
+	--[=[
+		@prop EVENT_LOG_APPEND Event
+		@within Exports
+	]=]
+
 	EVENT_LOG_APPEND = setmetatable(
 		{
 			id = "logAppend",
@@ -56,6 +83,11 @@ return {
 			__index = indexMeta,
 		}
 	),
+
+	--[=[
+		@prop EVENT_LOG_WRITE Event
+		@within Exports
+	]=]
 
 	EVENT_LOG_WRITE = setmetatable(
 		{
