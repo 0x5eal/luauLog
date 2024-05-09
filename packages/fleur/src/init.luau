@@ -8,12 +8,14 @@ end
 
 function main()
 	fleur.ConfigBuilder
-		.new()
+		.new("example")
 		:level("TRACE")
 		:format("{time} [{level}][{target}] {message}")
 		:levelFor("main", "DEBUG")
+		:logFile("{name}-{time}.log", "plaintext")
 		:filter(function(...): boolean
-			if select(1, ...) == "ligma bosack" then
+			-- Block out this very derogatory log smh
+			if select(1, ...) == "your mother" then
 				return false
 			end
 
@@ -21,8 +23,15 @@ function main()
 		end)
 		:buildAndApply()
 
+	fleur.debug("hello {}", "jack")
+	fleur.error("this is {libName}", {
+		libName = "fleur",
+	})
+	fleur.info("table: {}", {
+		hi = "hello",
+	})
 	fleur.info("hello from a function!")
-	fleur.info("ligma bosack")
+	fleur.info("your mother")
 	fleur.trace("some trace which shouldn't show up")
 	anonymous()
 end

@@ -1,4 +1,4 @@
--- Builder class for setting logger config
+local DateTime = require("@lune/datetime")
 
 local Types = require("../../../log-core/src/types")
 local LOG_SCOPES = require("../enum/scope")
@@ -16,6 +16,9 @@ export type ConfigBuilder = typeof(ConfigBuilder) & {
 	filterPredicate: (...any) -> boolean, -- TODO: Implement runtime filtering
 	formatTmpl: string,
 	truncateLimit: number,
+	package: string,
+	logFilename: string,
+	logFiletype: "plaintext" | "json",
 }
 
 local EVENT_FLEUR_REGISTER = setmetatable(
@@ -29,9 +32,10 @@ local EVENT_FLEUR_REGISTER = setmetatable(
 	}
 )
 
-function ConfigBuilder.new()
+function ConfigBuilder.new(packageName: string)
 	return setmetatable({
 		levels = {},
+		package = packageName,
 	}, {
 		__index = ConfigBuilder,
 	})
@@ -76,6 +80,15 @@ function ConfigBuilder.limit(self: ConfigBuilder, limit: number)
 	return self
 end
 
+function ConfigBuilder.logFile(self: ConfigBuilder, filename: string, type: "json" | "plaintext")
+	self.logFilename = Writer:writeAll(filename, {
+		name = self.package,
+		time = DateTime.now():toIsoDate(),
+	})
+	self.logFiletype = type
+	return self
+end
+
 function ConfigBuilder.buildAndApply(self: ConfigBuilder)
 	local w = Writer
 	w.maxLogLevel = self.levels["all"]
@@ -85,7 +98,7 @@ function ConfigBuilder.buildAndApply(self: ConfigBuilder)
 	})
 
 	EVENT_FLEUR_REGISTER:_fire(nil, self)
-	-- NOTE: EVENT_REGISTER is handled in interface.luau
+	-- NOTE: FLEUR_EVENT_REGISTER and EVENT_REGISTER are handled in interface.luau
 end
 
 return {

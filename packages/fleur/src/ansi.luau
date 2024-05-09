@@ -27,4 +27,15 @@ function Ansi.style(base: string, style: "bold" | "dim")
 	return Stdio.style(style) .. base .. Stdio.style("reset")
 end
 
+function Ansi.normalize(str: string): string
+	return select(
+		1,
+		str:gsub("\x1b%[%d+;%d+;%d+;%d+;%d+m", "")
+			:gsub("\x1b%[%d+;%d+;%d+;%d+m", "")
+			:gsub("\x1b%[%d+;%d+;%d+m", "")
+			:gsub("\x1b%[%d+;%d+m", "")
+			:gsub("\x1b%[%d+m", "")
+	)
+end
+
 return Ansi
