@@ -4,10 +4,10 @@ local LogBuffer = require("buffer")
 
 local Implementor = {}
 Implementor.Prototype = {}
-export type Implementor<W> = typeof(Implementor.Prototype) & {
+export type Implementor<W, B> = typeof(Implementor.Prototype) & {
 	writer: Types.Writer<W>?,
 	formatter: Types.Formatter,
-	buffer: LogBuffer.LogBuffer,
+	buffer: LogBuffer.LogBuffer<B>,
 }
 
 isRegistered = false
@@ -18,12 +18,12 @@ local _unregisterEventId = Events.EVENT_UNREGISTERED:listen(function(_: string)
 	isRegistered = false
 end)
 
-function Implementor.register<T>(
-	writer: Types.Writer<T>,
+function Implementor.register<W, B>(
+	writer: Types.Writer<W>,
 	formatter: Types.Formatter,
 	options: {
 		truncateLimit: number?,
-		existingStore: { Types.LogMessage }?,
+		existingStore: { Types.LogMessage<B> }?,
 	}
 )
 	if isRegistered then
@@ -50,26 +50,28 @@ function Implementor.register<T>(
 	return impl
 end
 
-function Implementor.unregister<W>(self: Implementor<W>)
+function Implementor.unregister<W, B>(self: Implementor<W, B>)
 	Events.EVENT_UNREGISTERED:_fire(nil, self)
 end
 
-function Implementor.Prototype.getImplementorInstance<W>(self: Implementor<W>)
+function Implementor.Prototype.getImplementorInstance<W, B>(self: Implementor<W, B>)
 	return self
 end
 
-function Implementor.Prototype.log<W>(
-	self: Implementor<W>,
+function Implementor.Prototype.log<W, B>(
+	self: Implementor<W, B>,
 	target: string,
 	scope: Types.LogScope,
 	writer: Types.Writer<W>?,
 	toTruncate: boolean,
+	metadata: B,
 	...
 )
 	self.buffer:append(writer or self.writer, {
 		truncate = true,
 		scope = scope,
 		target = target,
+		metadata = metadata,
 	}, ...)
 end
 

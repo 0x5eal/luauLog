@@ -13,7 +13,7 @@ export type ConfigBuilder = typeof(ConfigBuilder) & {
 	levels: {
 		[string]: number,
 	},
-	filterPredicate: (...any) -> boolean, -- TODO: Implement runtime filtering
+	filterPredicate: (...any) -> boolean,
 	formatTmpl: string,
 	truncateLimit: number,
 	package: string,
@@ -23,7 +23,7 @@ export type ConfigBuilder = typeof(ConfigBuilder) & {
 
 local EVENT_FLEUR_REGISTER = setmetatable(
 	{
-		id = "ready",
+		id = "fleurRegister",
 		listeners = {},
 		_disposed = false,
 	} :: Events.Event<ConfigBuilder>,

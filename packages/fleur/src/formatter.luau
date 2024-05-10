@@ -15,7 +15,7 @@ local LEVEL_COLORMAP: { [Types.LogScope]: string } = {
 	["TRACE"] = Ansi.new("trace"):cyan():build(),
 }
 
-function Formatter:fmt(logMessage: Types.LogMessage): string
+function Formatter:fmt(logMessage: Types.LogMessage<{}>): string
 	return Writer:writeAll(self.fmtTmpl, {
 		time = Ansi.style(
 			DateTime.fromUnixTimestamp(logMessage.timestamp):formatUniversalTime("%Y-%m-%d %H:%M:%S"),

@@ -1,8 +1,9 @@
-export type LogMessage = {
+export type LogMessage<T> = {
 	scope: LogScope,
 	message: string,
 	timestamp: number,
 	target: string,
+	metadata: T,
 }
 
 export type LogScope = "INFO" | "WARN" | "ERROR" | "DEBUG" | "TRACE"
@@ -14,7 +15,7 @@ export type Writer<T> = {
 } & T
 
 export type Formatter = {
-	fmt: (self: Formatter, message: LogMessage) -> string,
+	fmt: <T>(self: Formatter, message: LogMessage<T>) -> string,
 }
 
 return "<types>"

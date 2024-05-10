@@ -51,7 +51,7 @@ return {
 			id = "logAppend",
 			listeners = {},
 			_disposed = false,
-		} :: Event<Types.LogMessage>,
+		} :: Event<Types.LogMessage<any>>,
 		{
 			__index = indexMeta,
 		}
@@ -62,7 +62,7 @@ return {
 			id = "logWrite",
 			listeners = {},
 			_disposed = false,
-		} :: Event<Types.LogMessage>,
+		} :: Event<Types.LogMessage<any>>,
 		{
 			__index = indexMeta,
 		}

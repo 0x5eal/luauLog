@@ -18,7 +18,7 @@ packageName = ""
 logFilename = nil
 logFiletype = ""
 
-Events.EVENT_REGISTERED:listen(function(_: string, firedImpl: Implementor.Implementor<Writer.FleurWriter>)
+Events.EVENT_REGISTERED:listen(function(_: string, firedImpl: Implementor.Implementor<Writer.FleurWriter, {}>)
 	impl = firedImpl
 end)
 
@@ -32,12 +32,12 @@ ConfigBuilder.EVENT_FLEUR_REGISTER:listen(function(_: string, firedConfigBuilder
 	logFiletype = firedConfigBuilder.logFiletype
 end)
 
-Events.EVENT_LOG_WRITE:listen(function(_: string, logMessage: Types.LogMessage)
+Events.EVENT_LOG_WRITE:listen(function(_: string, logMessage: Types.LogMessage<{}>)
 	if logFilename == nil then
 		return
 	end
 
-	local implInner = impl :: Implementor.Implementor<Writer.FleurWriter>
+	local implInner = impl :: Implementor.Implementor<Writer.FleurWriter, {}>
 
 	if logFiletype == "plaintext" then
 		local formatted = Ansi.normalize(implInner.formatter:fmt(logMessage) .. "\n")
@@ -65,7 +65,7 @@ Events.EVENT_LOG_WRITE:listen(function(_: string, logMessage: Types.LogMessage)
 				}, true)
 			)
 		else
-			local newLog: { Types.LogMessage } = Serde.decode("json", Fs.readFile(logFilename))
+			local newLog: { Types.LogMessage<{}> } = Serde.decode("json", Fs.readFile(logFilename))
 			table.insert(newLog, logMessage)
 
 			Fs.writeFile(logFilename, Serde.encode("json", newLog, true))
@@ -102,7 +102,7 @@ return setmetatable(
 						print("Waiting for Implementor to be registered")
 					end
 
-					local localImpl: Implementor.Implementor<Writer.FleurWriter> = impl
+					local localImpl: Implementor.Implementor<Writer.FleurWriter, {}> = impl
 
 					local target = debug.info(2, "n")
 					local targetWriter: Writer.FleurWriter = Writer
@@ -128,7 +128,7 @@ return setmetatable(
 						target = packageName .. ":" .. target
 					end
 
-					Methods[string.upper(method)](localImpl, target, targetWriter, ...)
+					Methods[string.upper(method)](localImpl, target, targetWriter, {}, ...)
 				end
 			end
 

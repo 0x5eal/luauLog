@@ -3,19 +3,20 @@ local Types = require("types")
 
 local LogBuffer = {}
 
-export type LogBuffer = typeof(LogBuffer) & {
+export type LogBuffer<T> = typeof(LogBuffer) & {
 	truncateLimit: number,
 	formatter: Types.Formatter,
-	store: { Types.LogMessage },
+	store: { Types.LogMessage<T> },
 }
 
-function LogBuffer.append<W>(
-	self: LogBuffer,
+function LogBuffer.append<B, W>(
+	self: LogBuffer<B>,
 	writer: Types.Writer<W>,
 	options: {
 		truncate: boolean,
 		scope: Types.LogScope,
 		target: string,
+		metadata: B,
 	},
 	...
 )
@@ -27,9 +28,11 @@ function LogBuffer.append<W>(
 		local appendedMessage = {
 			scope = options.scope,
 			message = writer:writeAll(...),
-			timestamp = os.time(),
+			timestamp = os.clock(),
 			target = options.target,
+			metadata = options.metadata,
 		}
+
 		table.insert(self.store, appendedMessage)
 		Events.EVENT_LOG_APPEND:_fire(nil, appendedMessage)
 	end
